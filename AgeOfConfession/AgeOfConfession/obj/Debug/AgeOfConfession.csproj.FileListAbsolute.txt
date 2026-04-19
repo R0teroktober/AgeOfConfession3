@@ -1,0 +1,14 @@
+C:\git\AgeOfConfession\AgeOfConfession\AgeOfConfession\bin\Debug\Mods\mod\modinfo.json
+C:\git\AgeOfConfession\AgeOfConfession\AgeOfConfession\bin\Debug\Mods\mod\AgeOfConfession.deps.json
+C:\git\AgeOfConfession\AgeOfConfession\AgeOfConfession\bin\Debug\Mods\mod\AgeOfConfession.dll
+C:\git\AgeOfConfession\AgeOfConfession\AgeOfConfession\bin\Debug\Mods\mod\AgeOfConfession.pdb
+C:\git\AgeOfConfession\AgeOfConfession\AgeOfConfession\obj\Debug\AgeOfConfession.csproj.AssemblyReference.cache
+C:\git\AgeOfConfession\AgeOfConfession\AgeOfConfession\obj\Debug\AgeOfConfession.GeneratedMSBuildEditorConfig.editorconfig
+C:\git\AgeOfConfession\AgeOfConfession\AgeOfConfession\obj\Debug\AgeOfConfession.AssemblyInfoInputs.cache
+C:\git\AgeOfConfession\AgeOfConfession\AgeOfConfession\obj\Debug\AgeOfConfession.AssemblyInfo.cs
+C:\git\AgeOfConfession\AgeOfConfession\AgeOfConfession\obj\Debug\AgeOfConfession.csproj.CoreCompileInputs.cache
+C:\git\AgeOfConfession\AgeOfConfession\AgeOfConfession\obj\Debug\AgeOfConfession.sourcelink.json
+C:\git\AgeOfConfession\AgeOfConfession\AgeOfConfession\obj\Debug\AgeOfConfession.dll
+C:\git\AgeOfConfession\AgeOfConfession\AgeOfConfession\obj\Debug\refint\AgeOfConfession.dll
+C:\git\AgeOfConfession\AgeOfConfession\AgeOfConfession\obj\Debug\AgeOfConfession.pdb
+C:\git\AgeOfConfession\AgeOfConfession\AgeOfConfession\obj\Debug\ref\AgeOfConfession.dll

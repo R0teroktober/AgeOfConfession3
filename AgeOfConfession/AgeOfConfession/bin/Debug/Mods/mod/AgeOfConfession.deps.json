@@ -1,0 +1,41 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "AgeOfConfession/1.0.0": {
+        "dependencies": {
+          "CraluminumMods.VintageStory.AttributeRenderingLibrary": "2.8.1"
+        },
+        "runtime": {
+          "AgeOfConfession.dll": {}
+        }
+      },
+      "CraluminumMods.VintageStory.AttributeRenderingLibrary/2.8.1": {
+        "runtime": {
+          "lib/net8.0/AttributeRenderingLibrary.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "AgeOfConfession/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CraluminumMods.VintageStory.AttributeRenderingLibrary/2.8.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-v3tvPz4nu3jUFYEhDJeMP5gpwvpOpqgWHZf1I8PNBztYQO0CF79aW1mY3pLdsPcpu/d1iKq3NLBWj1XdyXThWg==",
+      "path": "craluminummods.vintagestory.attributerenderinglibrary/2.8.1",
+      "hashPath": "craluminummods.vintagestory.attributerenderinglibrary.2.8.1.nupkg.sha512"
+    }
+  }
+}
