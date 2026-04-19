@@ -1550,11 +1550,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\git\\AgeOfConfession\\AgeOfConfession\\CakeBuild\\CakeBuild.csproj",
+      "projectUniqueName": "C:\\git\\AgeOfConfession3\\AgeOfConfession\\CakeBuild\\CakeBuild.csproj",
       "projectName": "CakeBuild",
-      "projectPath": "C:\\git\\AgeOfConfession\\AgeOfConfession\\CakeBuild\\CakeBuild.csproj",
+      "projectPath": "C:\\git\\AgeOfConfession3\\AgeOfConfession\\CakeBuild\\CakeBuild.csproj",
       "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
-      "outputPath": "C:\\git\\AgeOfConfession\\AgeOfConfession\\CakeBuild\\obj\\",
+      "outputPath": "C:\\git\\AgeOfConfession3\\AgeOfConfession\\CakeBuild\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

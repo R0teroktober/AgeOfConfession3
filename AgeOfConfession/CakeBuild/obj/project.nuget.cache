@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "cJOFYaqhkes=",
+  "dgSpecHash": "DxfJSQSTt40=",
   "success": true,
-  "projectFilePath": "C:\\git\\AgeOfConfession\\AgeOfConfession\\CakeBuild\\CakeBuild.csproj",
+  "projectFilePath": "C:\\git\\AgeOfConfession3\\AgeOfConfession\\CakeBuild\\CakeBuild.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Lenovo\\.nuget\\packages\\autofac\\8.1.1\\autofac.8.1.1.nupkg.sha512",
     "C:\\Users\\Lenovo\\.nuget\\packages\\cake.cli\\5.0.0\\cake.cli.5.0.0.nupkg.sha512",
