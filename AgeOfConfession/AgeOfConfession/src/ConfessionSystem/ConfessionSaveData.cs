@@ -91,4 +91,22 @@ namespace AgeOfConfession
         [ProtoMember(3)]
         public int ChargeContributingPulsesToday { get; set; }
     }
+
+    [ProtoContract]
+    public class StartDevotionPacket
+    {
+    }
+
+    [ProtoContract]
+    public class StopDevotionPacket
+    {
+    }
+    [ProtoContract]
+    public class InterruptDevotionPacket
+    {
+    }
+    [ProtoContract]
+    public class AnsweredDevotionPulsePacket
+    {
+    }
 }

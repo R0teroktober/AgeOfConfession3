@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Vintagestory.API.Common;
+using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.API.Server;
@@ -14,9 +15,10 @@ namespace AgeOfConfession {
     {
         private const int DevotionPulseIntervalMs = 15000;
 
-
+        
         private ICoreServerAPI sapi = null!;
         private AgeOfConfessionModSystem confession = null!;
+        private IServerNetworkChannel serverChannel = null!;
 
         private readonly Dictionary<string, DevotionSession> devotionSessionsByPlayerUid = new();
 
@@ -37,42 +39,27 @@ namespace AgeOfConfession {
             sapi = api;
             confession = api.ModLoader.GetModSystem<AgeOfConfessionModSystem>();
 
-            RegisterDebugCommands(api);
+            serverChannel = api.Network.RegisterChannel("confession-devotion").RegisterMessageType(typeof(StartDevotionPacket)).RegisterMessageType(typeof(StopDevotionPacket)).SetMessageHandler<StartDevotionPacket>(OnStartDevotionPacket).SetMessageHandler<StopDevotionPacket>(OnStopDevotionPacket).RegisterMessageType(typeof(AnsweredDevotionPulsePacket));
+
             #region tickListener
             api.Event.RegisterGameTickListener(OnDevotionPulse, DevotionPulseIntervalMs);
             api.Event.PlayerDisconnect += OnPlayerDisconnect;
             #endregion
         }
-
-        private void RegisterDebugCommands(ICoreServerAPI api)
+        private void OnStartDevotionPacket(IServerPlayer fromPlayer, StartDevotionPacket packet)
         {
-            api.ChatCommands.GetOrCreate("confession")
-                .BeginSubCommand("debug")
-                    .RequiresPrivilege(Privilege.controlserver)
-
-                    .BeginSubCommand("startdevotion")
-                        .WithDescription("Start a debug devotion session")
-                        .RequiresPrivilege(Privilege.controlserver)
-                        .RequiresPlayer()
-                        .HandleWith(OnDebugStartDevotion)
-                    .EndSubCommand()
-
-                    .BeginSubCommand("stopdevotion")
-                        .WithDescription("Stop a debug devotion session")
-                        .RequiresPrivilege(Privilege.controlserver)
-                        .RequiresPlayer()
-                        .HandleWith(OnDebugStopDevotion)
-                    .EndSubCommand()
-
-                    .BeginSubCommand("devotionstatus")
-                        .WithDescription("Show your current debug devotion session")
-                        .RequiresPrivilege(Privilege.controlserver)
-                        .RequiresPlayer()
-                        .HandleWith(OnDebugDevotionStatus)
-                    .EndSubCommand()
-
-                .EndSubCommand();
+            if (fromPlayer?.Entity == null) return;
+           
+            StartDevotion(fromPlayer);
         }
+
+        private void OnStopDevotionPacket(IServerPlayer fromPlayer, StopDevotionPacket packet)
+        {
+            if (fromPlayer == null) return;
+           
+            StopDevotion(fromPlayer);
+        }
+
 
         private class AnsweredDevotion
         {
@@ -81,78 +68,20 @@ namespace AgeOfConfession {
             public CommunityRecord Community { get; set; } = null!;
         }
 
-        private TextCommandResult OnDebugStartDevotion(TextCommandCallingArgs args)
-        {
-            if (args.Caller.Player is not IServerPlayer player)
-            {
-                return TextCommandResult.Error("Only players can start devotion.");
-            }
+      
 
-            StartDevotion(player);
-
-            return TextCommandResult.Success("You enter devotion.");
-        }
-
-        private TextCommandResult OnDebugStopDevotion(TextCommandCallingArgs args)
-        {
-            if (args.Caller.Player is not IServerPlayer player)
-            {
-                return TextCommandResult.Error("Only players can stop devotion.");
-            }
-
-            bool stopped = StopDevotion(player);
-
-            return stopped
-                ? TextCommandResult.Success("You leave devotion.")
-                : TextCommandResult.Success("You are not in devotion.");
-        }
-
-        private TextCommandResult OnDebugDevotionStatus(TextCommandCallingArgs args)
-        {
-            if (args.Caller.Player is not IServerPlayer player)
-            {
-                return TextCommandResult.Error("Only players can check devotion status.");
-            }
-
-            if (!devotionSessionsByPlayerUid.TryGetValue(player.PlayerUID, out DevotionSession session))
-            {
-                return TextCommandResult.Success("You are not in devotion.");
-            }
-
-            return TextCommandResult.Success(
-                $"IsInDevotion: {session.IsInDevotion}, " +
-                $"DevotionIsAnswered: {session.DevotionIsAnswered}, " +
-                $"CurrentCommunityId: {(string.IsNullOrEmpty(session.CurrentCommunityId) ? "none" : session.CurrentCommunityId)}, " +
-                $"StartPosition: {session.StartPosition.X:0.0}, {session.StartPosition.Y:0.0}, {session.StartPosition.Z:0.0}"
-            );
-        }
-
+     
         public void StartDevotion(IServerPlayer player)
         {
-            Vec3d startPosition = new(
-                player.Entity.Pos.X,
-                player.Entity.Pos.Y,
-                player.Entity.Pos.Z
-            );
+            Vec3d startPosition = new(player.Entity.Pos.X,player.Entity.Pos.Y,player.Entity.Pos.Z);
 
-            devotionSessionsByPlayerUid[player.PlayerUID] = new DevotionSession
-            {
-                PlayerUid = player.PlayerUID,
-                IsInDevotion = true,
-                DevotionIsAnswered = false,
-                CurrentCommunityId = "",
-                StartPosition = startPosition,
-                LastNothingMessagePulse = -9999
-            };
+            devotionSessionsByPlayerUid[player.PlayerUID] = new DevotionSession{PlayerUid = player.PlayerUID,IsInDevotion = true,DevotionIsAnswered = false,CurrentCommunityId = "",StartPosition = startPosition,};
         }
 
         public bool StopDevotion(IServerPlayer player)
         {
-            if (player == null)
-            {
-                return false;
-            }
-
+            if (player == null) return false;
+           
             RemoveDevotionHungerModifier(player);
 
             return devotionSessionsByPlayerUid.Remove(player.PlayerUID);
@@ -160,10 +89,8 @@ namespace AgeOfConfession {
 
         private void OnDevotionPulse(float dt)
         {
-            if (sapi?.World == null || confession?.SaveData == null || confession.Config == null)
-            {
-                return;
-            }
+            if (sapi?.World == null || confession?.SaveData == null || confession.Config == null) return;
+            
 
             devotionPulseIndex++;
 
@@ -192,7 +119,7 @@ namespace AgeOfConfession {
 
                 if (HasPlayerMovedTooFar(player, session))
                 {
-                    InterruptDevotion(player, "Your devotion isn't focused enough.");
+                    StopDevotion(player);
                     continue;
                 }
 
@@ -205,26 +132,113 @@ namespace AgeOfConfession {
                 }
 
                 HandleAnsweredDevotion(player, session, community);
+                serverChannel.SendPacket(new AnsweredDevotionPulsePacket(), player);
 
                 ApplyPersonalDevotionRewards(player, community);
 
-                answeredDevotions.Add(new AnsweredDevotion
+                answeredDevotions.Add(new AnsweredDevotion{Player = player,Session = session,Community = community});
+            }
+            ProcessAreaDamage(answeredDevotions);
+            ProcessChargeGain(answeredDevotions);
+
+        }
+
+        private void ProcessAreaDamage(List<AnsweredDevotion> answeredDevotions)
+        {
+            if (answeredDevotions.Count == 0) return;
+           
+            foreach (IGrouping<string, AnsweredDevotion> group in answeredDevotions.GroupBy(entry => entry.Community.CommunityId))
+            {
+                CommunityRecord community = group.First().Community;
+
+                int tier = GetChargeTier(community);
+                if (tier <= 0) continue;
+               
+                float baseDamage = GetTierValue(
+                    confession.Config.AreaDamageByTier,
+                    tier,
+                    0f
+                );
+
+                if (baseDamage <= 0f) continue;
+              
+                int answeredPlayerCount = group.Select(entry => entry.Player.PlayerUID).Distinct().Count();
+                float multiplier = CalculateAreaDamagePlayerMultiplier(answeredPlayerCount);
+                float finalDamage = baseDamage * multiplier;
+
+                ApplyAreaDamage(community, finalDamage);
+            }
+        }
+
+
+        private float CalculateAreaDamagePlayerMultiplier(int playerCount)
+        {
+            if (playerCount <= 1) return 1f;
+           
+            const float maxMultiplier = 2.0f;
+            const float scaling = 0.35f;
+
+            return 1f + (maxMultiplier - 1f) * (1f - MathF.Exp(-scaling * (playerCount - 1)));
+        }
+
+        private void ApplyAreaDamage(CommunityRecord community, float damage)
+        {
+            if (damage <= 0f) return;
+            
+
+            const int maxTargets = 20;
+
+            Vec3d center = new(community.X + 0.5,community.Y + 0.5,community.Z + 0.5);
+
+            float radius = Math.Max(1, confession.Config.InfluenceRadius);
+
+            int matchedTargets = 0;
+
+            Entity[] targets = sapi.World.GetEntitiesAround(center,radius,radius,entity =>
                 {
-                    Player = player,
-                    Session = session,
-                    Community = community
-                });
+                    if (matchedTargets >= maxTargets) return false;
+
+                    if (!IsValidAreaDamageTarget(entity)) return false;
+                    
+                    matchedTargets++;
+                    return true;
+                }
+            );
+
+            foreach (Entity target in targets)
+            {
+                target.ReceiveDamage(new DamageSource{Source = EnumDamageSource.Internal,Type = EnumDamageType.BluntAttack,SourcePos = center},damage);
+            }
+        }
+        private bool IsValidAreaDamageTarget(Entity entity)
+        {
+            if (entity == null || !entity.Alive) return false;
+
+
+            if (entity is EntityPlayer) return false;
+            
+
+            string code = entity.Code?.ToShortString() ?? "";
+            if (string.IsNullOrWhiteSpace(code)) return false;
+           
+
+            string loweredCode = code.ToLowerInvariant();
+
+            foreach (string part in confession.Config.AreaDamageTargetCodeContains)
+            {
+                if (string.IsNullOrWhiteSpace(part)) continue;
+           
+                if (loweredCode.Contains(part.ToLowerInvariant())) return true;
+               
             }
 
-            ProcessChargeGain(answeredDevotions);
+            return false;
         }
 
         private void ProcessChargeGain(List<AnsweredDevotion> answeredDevotions)
         {
-            if (answeredDevotions.Count == 0)
-            {
-                return;
-            }
+            if (answeredDevotions.Count == 0) return;
+         
 
             bool changed = false;
 
@@ -232,22 +246,15 @@ namespace AgeOfConfession {
             {
                 CommunityRecord community = group.First().Community;
 
-                List<IServerPlayer> contributingPlayers = group
-                    .Select(entry => entry.Player)
-                    .Where(CanPlayerContributeChargeToday)
-                    .ToList();
+                List<IServerPlayer> contributingPlayers = group.Select(entry => entry.Player).Where(CanPlayerContributeChargeToday).ToList();
 
-                if (contributingPlayers.Count == 0)
-                {
-                    continue;
-                }
+                if (contributingPlayers.Count == 0) continue;
+            
 
                 int gain = CalculateChargeGain(contributingPlayers.Count);
 
-                if (gain <= 0)
-                {
-                    continue;
-                }
+                if (gain <= 0) continue;
+               
 
                 int oldCharge = community.Charge;
 
@@ -301,15 +308,10 @@ namespace AgeOfConfession {
 
                 double distanceSq = playerPos.SquareDistanceTo(center);
 
-                if (distanceSq > maxDistanceSq)
-                {
-                    continue;
-                }
+                if (distanceSq > maxDistanceSq) continue;
 
-                if (!IsCommunityRecordValid(record))
-                {
-                    continue;
-                }
+                if (!IsCommunityRecordValid(record)) continue;
+             
 
                 if (distanceSq < bestDistanceSq)
                 {
@@ -334,11 +336,8 @@ namespace AgeOfConfession {
 
         private int GetChargeTier(CommunityRecord community)
         {
-            if (community == null || community.Charge <= 0)
-            {
-                return 0;
-            }
-
+            if (community == null || community.Charge <= 0) return 0;
+           
             int startCharge = Math.Max(1, confession.Config.StartCharge);
             int maxCharge = Math.Max(startCharge + 4, confession.Config.MaxCharge);
 
@@ -369,7 +368,7 @@ namespace AgeOfConfession {
             stats.ChargeContributingPulsesToday++;
             if (stats.ChargeContributingPulsesToday >= confession.Config.EffectiveDevotionPulsesPerDay)
             {
-                player.SendMessage(GlobalConstants.InfoLogChatGroup, "You feel exhausted.", EnumChatType.Notification);
+                player.SendMessage(GlobalConstants.InfoLogChatGroup, "[Confession]: You feel exhausted.", EnumChatType.Notification);
             }
         }
 
@@ -379,12 +378,7 @@ namespace AgeOfConfession {
 
             if (!confession.SaveData.DevotionStatsByPlayerUid.TryGetValue(playerUid, out PlayerDevotionStats stats))
             {
-                stats = new PlayerDevotionStats
-                {
-                    PlayerUid = playerUid,
-                    DayIndex = currentDay,
-                    ChargeContributingPulsesToday = 0
-                };
+                stats = new PlayerDevotionStats{PlayerUid = playerUid,DayIndex = currentDay,ChargeContributingPulsesToday = 0};
 
                 confession.SaveData.DevotionStatsByPlayerUid[playerUid] = stats;
 
@@ -402,10 +396,8 @@ namespace AgeOfConfession {
 
         private int CalculateChargeGain(int contributingPlayerCount)
         {
-            if (contributingPlayerCount <= 0)
-            {
-                return 0;
-            }
+            if (contributingPlayerCount <= 0) return 0;
+      
 
             float multiplier = 1f + 2f * (1f - MathF.Exp(-0.45f * (contributingPlayerCount - 1)));
 
@@ -415,51 +407,33 @@ namespace AgeOfConfession {
         }
         private bool IsCommunityRecordValid(CommunityRecord record)
         {
-            if (record == null)
-            {
-                return false;
-            }
+            if (record == null) return false;
 
-            if (string.IsNullOrEmpty(record.CommunityId) || string.IsNullOrEmpty(record.BeliefCode))
-            {
-                return false;
-            }
+            if (string.IsNullOrEmpty(record.CommunityId) || string.IsNullOrEmpty(record.BeliefCode)) return false;
 
-            if (!confession.SaveData.BeliefsByCode.ContainsKey(record.BeliefCode))
-            {
-                return false;
-            }
+
+            if (!confession.SaveData.BeliefsByCode.ContainsKey(record.BeliefCode)) return false;
+          
 
             BlockPos pos = new(record.X, record.Y, record.Z);
             Block block = sapi.World.BlockAccessor.GetBlock(pos);
 
-            if (block == null || !confession.IsCommunityCenterBlock(block))
-            {
-                return false;
-            }
+            if (block == null || !confession.IsCommunityCenterBlock(block)) return false;
+         
 
-            if (block.Variant?["state"] != "bound")
-            {
-                return false;
-            }
+            if (block.Variant?["state"] != "bound") return false;
+          
 
-            BlockEntityCommunityCenter be =
-                sapi.World.BlockAccessor.GetBlockEntity(pos) as BlockEntityCommunityCenter;
+            BlockEntityCommunityCenter be = sapi.World.BlockAccessor.GetBlockEntity(pos) as BlockEntityCommunityCenter;
 
-            if (be == null)
-            {
-                return false;
-            }
+            if (be == null) return false;
 
-            if (!be.IsBound)
-            {
-                return false;
-            }
 
-            if (be.CommunityId != record.CommunityId)
-            {
-                return false;
-            }
+            if (!be.IsBound) return false;
+
+
+            if (be.CommunityId != record.CommunityId) return false;
+          
 
             return true;
         }
@@ -467,40 +441,15 @@ namespace AgeOfConfession {
         private void HandleUnansweredDevotion(IServerPlayer player, DevotionSession session)
         {
             RemoveDevotionHungerModifier(player);
+
             session.DevotionIsAnswered = false;
             session.CurrentCommunityId = "";
-
-            if (devotionPulseIndex - session.LastNothingMessagePulse < 4)
-            {
-                return;
-            }
-
-            player.SendMessage(GlobalConstants.InfoLogChatGroup, "You sense nothing...", EnumChatType.Notification);
-
-            session.LastNothingMessagePulse = devotionPulseIndex;
         }
 
         private void HandleAnsweredDevotion(IServerPlayer player, DevotionSession session, CommunityRecord community)
         {
-            bool wasPreviouslyUnanswered = !session.DevotionIsAnswered;
-            bool communityChanged = session.CurrentCommunityId != community.CommunityId;
-
             session.DevotionIsAnswered = true;
             session.CurrentCommunityId = community.CommunityId;
-
-            if (!wasPreviouslyUnanswered && !communityChanged)
-            {
-                return;
-            }
-
-            string beliefName = community.BeliefCode;
-
-            if (confession.SaveData.BeliefsByCode.TryGetValue(community.BeliefCode, out BeliefData belief))
-            {
-                beliefName = belief.DisplayName;
-            }
-
-            player.SendMessage(GlobalConstants.InfoLogChatGroup, $"Your devotion is answered by {beliefName}.", EnumChatType.Notification);
         }
         private bool HasPlayerMovedTooFar(IServerPlayer player, DevotionSession session)
         {
@@ -528,23 +477,11 @@ namespace AgeOfConfession {
                 return;
             }
 
-            float temporalStabilityGain = GetTierValue(
-                confession.Config.TemporalStabilityGainByTier,
-                tier,
-                0f
-            );
+            float temporalStabilityGain = GetTierValue(confession.Config.TemporalStabilityGainByTier,tier,0f);
 
-            float hungerReduction = GetTierValue(
-                confession.Config.HungerReductionByTier,
-                tier,
-                0f
-            );
+            float hungerReduction = GetTierValue(confession.Config.HungerReductionByTier,tier,0f);
 
-            float healingGain = GetTierValue(
-                confession.Config.HealingGainByTier,
-                tier,
-                0f
-            );
+            float healingGain = GetTierValue(confession.Config.HealingGainByTier,tier,0f);
 
             ApplyTemporalStabilityReward(player, temporalStabilityGain);
             ApplyHealingReward(player, healingGain);
@@ -562,49 +499,22 @@ namespace AgeOfConfession {
         {
             if (healingGain <= 0) return;
 
-            player.Entity.ReceiveDamage(
-                new DamageSource
-                {
-                    Source = EnumDamageSource.Internal,
-                    Type = EnumDamageType.Heal
-                },
-                healingGain
-            );
+            player.Entity.ReceiveDamage(new DamageSource{Source = EnumDamageSource.Internal,Type = EnumDamageType.Heal},healingGain);
         }
         private void ApplyDevotionHungerModifier(IServerPlayer player, float hungerReduction)
         {
-            if (player?.Entity == null)
-            {
-                return;
-            }
+            if (player?.Entity == null) return;
+            
             float reduction = GameMath.Clamp(hungerReduction, 0f, 0.95f);
 
-            player.Entity.Stats.Set(
-                "hungerrate",
-                DevotionHungerStatCode,
-                -reduction,
-                false
-            );
+            player.Entity.Stats.Set("hungerrate",DevotionHungerStatCode,-reduction,false);
         }
 
         private void RemoveDevotionHungerModifier(IServerPlayer player)
         {
-            if (player?.Entity == null)
-            {
-                return;
-            }
+            if (player?.Entity == null) return;
+           
             player.Entity.Stats.Remove("hungerrate", DevotionHungerStatCode);
-        }
-
-        private void InterruptDevotion(IServerPlayer player, string message)
-        {
-            StopDevotion(player);
-
-            player.SendMessage(
-                GlobalConstants.InfoLogChatGroup,
-                message,
-                EnumChatType.Notification
-            );
         }
     }
 }

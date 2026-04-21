@@ -14,61 +14,15 @@
   "sidesolid": { "all": false },
   "variantgroups": [
     { "code": "state", "states": ["unbound", "bound"] },
-    { "code": "side", "loadFromProperties": "abstract/horizontalorientation" }
+    { "code": "side", "states": ["ns", "we"] }
   ],
   "attributes": {
     "handbook": {
       "groupBy": ["communityblock-*"],
-      "excludeByType": { "west": true, "east": true, "south": true }
+      "excludeByType": { "we": true }
     }
   },
-  "entityBehaviors": [
-    { "name": "AttributeRenderingLibrary.ShapeTexturesFromAttributes" }
-  ],
-  "behaviors": [
-    {
-      "name": "AttributeRenderingLibrary.HorizontalOrientable",
-      "properties": { "dropBlockFace": "north" }
-    },
-    {
-      "name": "AttributeRenderingLibrary.BlockShapeTexturesFromAttributes",
-      "properties": {
-        "name": { "*": ["Placeholder Name"] },
-        "description": { "*": ["placeholder"] },
-        "textures": {},
-        "shape": {
-          "style-altar": {
-            "base": "game:block/basic/cube",
-            "rotateYByType": {
-              "*-north": 0,
-              "*-east": 90,
-              "*-south": 180,
-              "*-west": 270
-            }
-          }
-        }
-      }
-    }
-  ],
-  "creativeinventoryStacksByType": {
-    "*-north": [
-      {
-        "tabs": ["general", "confession"],
-        "stacks": [
-          {
-            "type": "block",
-            "code": "communityblock-unbound-north",
-            "attributes": { "types": { "style": "altar" } }
-          },
-          {
-            "type": "block",
-            "code": "communityblock-bound-north",
-            "attributes": { "types": { "style": "altar" } }
-          }
-        ]
-      }
-    ]
-  },
+  "behaviors": [{ "name": "NWOrientable" }],
   "shape": { "base": "game:block/basic/cube" },
   "texturesByType": {
     "*-unbound-*": {
@@ -127,5 +81,9 @@
       "west": { "base": "game:block/stone/altar/left" },
       "east": { "base": "game:block/stone/altar/right" }
     }
+  },
+  "creativeinventory": {
+    "confession": ["*-unbound-ns"],
+    "general": ["*-unbound-ns"]
   }
 }

@@ -35,5 +35,17 @@ namespace AgeOfConfession
         1f, 2f, 4f, 5f
         };
 
+        public string[] AreaDamageTargetCodeContains { get; set; } =
+        {
+            "drifter",
+            "bowtorn",
+            "shiver"
+        };
+
+        public string[] BeliefFounderAllowedClasses { get; set; } =
+        {
+           "malefactor"
+        };
+
     }
 }

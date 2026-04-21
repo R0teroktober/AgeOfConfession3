@@ -13,7 +13,8 @@ namespace AgeOfConfession
 {
     public class AgeOfConfessionModSystem : ModSystem
     {
-        //public static ConfessionConfig Config { get; private set; }
+        public string[] BeliefFounderAllowedClasses { get; set; } = Array.Empty<string>();
+
         private ConfessionConfig config = new();
         public ConfessionConfig Config => config;
 
@@ -50,7 +51,8 @@ namespace AgeOfConfession
                     HungerReductionByTier = new float[] { 0.10f, 0.25f, 0.40f, 0.50f },
                     HealingGainByTier = new float[] { 0.1f, 0.2f, 0.4f, 0.6f },
                     AreaDamageByTier = new float[] { 1f, 2f, 4f, 5f },
-
+                    AreaDamageTargetCodeContains = new string[] { "drifter", "bowtorn", "shiver" },
+                    BeliefFounderAllowedClasses = new string[] { "malefactor" }
 
                 };
 
@@ -138,18 +140,12 @@ namespace AgeOfConfession
 
         private void OnGameWorldSaving()
         {
-            sapi.WorldManager.SaveGame.StoreData(
-                SaveDataKey,
-                SerializerUtil.Serialize(saveData)
-            );
+            sapi.WorldManager.SaveGame.StoreData(SaveDataKey,SerializerUtil.Serialize(saveData));
         }
 
         public void Save()
         {
-            sapi.WorldManager.SaveGame.StoreData(
-                SaveDataKey,
-                SerializerUtil.Serialize(saveData)
-            );
+            sapi.WorldManager.SaveGame.StoreData(SaveDataKey,SerializerUtil.Serialize(saveData));
         }
 
         private TextCommandResult OnCreateBelief(TextCommandCallingArgs args)
@@ -158,6 +154,10 @@ namespace AgeOfConfession
             if (player == null)
             {
                 return TextCommandResult.Error("Only players can create beliefs.");
+            }
+            if (!CanPlayerCreateBelief(player))
+            {
+                return TextCommandResult.Error("Your character class cannot found a belief.");
             }
             if (HasActiveBeliefFoundedBy(player.PlayerUID))
             {
@@ -177,15 +177,7 @@ namespace AgeOfConfession
             }
 
 
-            BeliefData belief = new()
-            {
-                Code = code,
-                DisplayName = displayName,
-                FounderPlayerUid = player?.PlayerUID ?? "",
-                FounderPlayerName = player?.PlayerName ?? "",
-                CreatedTotalDays = sapi.World.Calendar.TotalDays,
-                BecameEmptyTotalDays = sapi.World.Calendar.TotalDays
-            };
+            BeliefData belief = new() {Code = code,DisplayName = displayName,FounderPlayerUid = player?.PlayerUID ?? "",FounderPlayerName = player?.PlayerName ?? "",CreatedTotalDays = sapi.World.Calendar.TotalDays,BecameEmptyTotalDays = sapi.World.Calendar.TotalDays};
 
             saveData.BeliefsByCode[code] = belief;
             Save();
@@ -240,9 +232,7 @@ namespace AgeOfConfession
                     BlockPos worldPos = new(record.X, record.Y, record.Z);
                     Vec3i mapPos = worldPos.ToLocalPosition(sapi);
 
-                    communityInfos.Add(
-                        $"[id: {communityId} pos: {mapPos.X},{mapPos.Y},{mapPos.Z} charge: {record.Charge}/{record.MaxCharge}]"
-                    );
+                    communityInfos.Add($"[id: {communityId} pos: {mapPos.X},{mapPos.Y},{mapPos.Z} charge: {record.Charge}/{record.MaxCharge}]");
                 }
 
                 sb.Append(string.Join(", ", communityInfos));
@@ -304,13 +294,7 @@ namespace AgeOfConfession
 
             string communityId = GetCommunityId(pos);
 
-            be.Bind(
-                beliefCode,
-                communityId,
-                config.StartCharge,
-                config.MaxCharge,
-                sapi.World.Calendar.TotalDays
-            );
+            be.Bind(beliefCode,communityId,config.StartCharge,config.MaxCharge,sapi.World.Calendar.TotalDays);
 
             Block boundBlock = GetBoundVariant(block);
             if (boundBlock == null || boundBlock.Id == 0)
@@ -355,10 +339,8 @@ namespace AgeOfConfession
 
         private void DeleteCommunityAndUnbindBlock(string communityId, bool save = true)
         {
-            if (!saveData.CommunitiesById.TryGetValue(communityId, out CommunityRecord record))
-            {
-                return;
-            }
+            if (!saveData.CommunitiesById.TryGetValue(communityId, out CommunityRecord record)) return;
+            
 
             BlockPos pos = new(record.X, record.Y, record.Z);
 
@@ -396,11 +378,8 @@ namespace AgeOfConfession
         {
             if (string.IsNullOrEmpty(communityId)) return false;
 
-            if (!saveData.CommunitiesById.TryGetValue(communityId, out CommunityRecord record))
-            {
-                return false;
-            }
-
+            if (!saveData.CommunitiesById.TryGetValue(communityId, out CommunityRecord record)) return false;
+           
             saveData.CommunitiesById.Remove(communityId);
 
             if (saveData.BeliefsByCode.TryGetValue(record.BeliefCode, out BeliefData belief))
@@ -426,15 +405,10 @@ namespace AgeOfConfession
         {
             BlockPos pos = new(record.X, record.Y, record.Z);
 
-            if (sapi.World.BlockAccessor.GetBlockEntity(pos) is not BlockEntityCommunityCenter be)
-            {
-                return;
-            }
+            if (sapi.World.BlockAccessor.GetBlockEntity(pos) is not BlockEntityCommunityCenter be) return;
 
-            if (!be.IsBound || be.CommunityId != record.CommunityId)
-            {
-                return;
-            }
+            if (!be.IsBound || be.CommunityId != record.CommunityId) return;
+            
 
             be.SyncChargeFromSystem(record.Charge, record.MaxCharge, record.LastDecayTotalDays);
         }
@@ -462,18 +436,29 @@ namespace AgeOfConfession
             return $"{pos.X}{pos.Z}";
         }
 
+        private bool CanPlayerCreateBelief(IServerPlayer player)
+        {
+            string[] allowed = config.BeliefFounderAllowedClasses;
+
+            if (allowed == null || allowed.Length == 0) return true;
+
+
+            string playerClass = player.Entity.WatchedAttributes.GetString("characterClass", null);
+
+            if (string.IsNullOrWhiteSpace(playerClass)) return false;
+            
+
+            return allowed.Any(code => !string.IsNullOrWhiteSpace(code) &&code.Equals(playerClass, StringComparison.OrdinalIgnoreCase));
+        }
+
         private bool HasActiveCommunityFoundedBy(string playerUid)
         {
-            return saveData.CommunitiesById.Values.Any(record =>
-                record.FounderPlayerUid == playerUid
-            );
+            return saveData.CommunitiesById.Values.Any(record =>record.FounderPlayerUid == playerUid);
         }
 
         private bool HasActiveBeliefFoundedBy(string playerUid)
         {
-            return saveData.BeliefsByCode.Values.Any(belief =>
-                belief.FounderPlayerUid == playerUid
-            );
+            return saveData.BeliefsByCode.Values.Any(belief =>belief.FounderPlayerUid == playerUid);
         }
 
         private bool IsAnotherCommunityTooClose(BlockPos pos, out int distance)
@@ -552,8 +537,7 @@ namespace AgeOfConfession
 
         public bool IsCommunityCenterBlock(Block block)
         {
-            return block.Code.Domain == "confession"
-                && block.Code.Path.StartsWith("communityblock-");
+            return block.Code.Domain == "confession"&& block.Code.Path.StartsWith("communityblock-");
         }
 
         private Block GetUnboundVariant(Block currentBlock)
@@ -573,16 +557,11 @@ namespace AgeOfConfession
         {
             if (communityCount <= 0) return 0;
 
-            if (communityCount <= 3)
-            {
-                return config.DecayRate;
-            }
+            if (communityCount <= 3) return config.DecayRate;
+            
 
-            if (communityCount <= 6)
-            {
-                return Math.Max(1, config.DecayRate * 2 / 3);
-            }
-
+            if (communityCount <= 6) return Math.Max(1, config.DecayRate * 2 / 3);
+           
             return Math.Max(1, config.DecayRate / 3);
         }
 
