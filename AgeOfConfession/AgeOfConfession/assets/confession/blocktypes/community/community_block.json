@@ -1,0 +1,131 @@
+{
+  "enabled": true,
+  "code": "communityblock",
+  "class": "CommunityCenter",
+  "entityClass": "CommunityCenter",
+  "maxStackSize": 64,
+  "blockmaterial": "Stone",
+  "resistance": 1,
+  "renderPass": "OpaqueNoCull",
+  "facecullmode": "nevercull",
+  "lightabsorption": 0,
+  "sideopaque": { "all": false },
+  "sideao": { "all": true },
+  "sidesolid": { "all": false },
+  "variantgroups": [
+    { "code": "state", "states": ["unbound", "bound"] },
+    { "code": "side", "loadFromProperties": "abstract/horizontalorientation" }
+  ],
+  "attributes": {
+    "handbook": {
+      "groupBy": ["communityblock-*"],
+      "excludeByType": { "west": true, "east": true, "south": true }
+    }
+  },
+  "entityBehaviors": [
+    { "name": "AttributeRenderingLibrary.ShapeTexturesFromAttributes" }
+  ],
+  "behaviors": [
+    {
+      "name": "AttributeRenderingLibrary.HorizontalOrientable",
+      "properties": { "dropBlockFace": "north" }
+    },
+    {
+      "name": "AttributeRenderingLibrary.BlockShapeTexturesFromAttributes",
+      "properties": {
+        "name": { "*": ["Placeholder Name"] },
+        "description": { "*": ["placeholder"] },
+        "textures": {},
+        "shape": {
+          "style-altar": {
+            "base": "game:block/basic/cube",
+            "rotateYByType": {
+              "*-north": 0,
+              "*-east": 90,
+              "*-south": 180,
+              "*-west": 270
+            }
+          }
+        }
+      }
+    }
+  ],
+  "creativeinventoryStacksByType": {
+    "*-north": [
+      {
+        "tabs": ["general", "confession"],
+        "stacks": [
+          {
+            "type": "block",
+            "code": "communityblock-unbound-north",
+            "attributes": { "types": { "style": "altar" } }
+          },
+          {
+            "type": "block",
+            "code": "communityblock-bound-north",
+            "attributes": { "types": { "style": "altar" } }
+          }
+        ]
+      }
+    ]
+  },
+  "shape": { "base": "game:block/basic/cube" },
+  "texturesByType": {
+    "*-unbound-*": {
+      "up": {
+        "base": "game:block/stone/altar/top",
+        "blendedOverlays": [
+          {
+            "base": "game:block/plant/wildvine-static/wildvineend_2",
+            "blendMode": "Overlay"
+          }
+        ]
+      },
+      "down": { "base": "game:block/stone/altar/bottom" },
+      "south": {
+        "base": "game:block/stone/altar/front",
+        "blendedOverlays": [
+          {
+            "base": "game:block/plant/wildvine-static/wildvine_1",
+            "blendMode": "Overlay"
+          }
+        ]
+      },
+      "north": {
+        "base": "game:block/stone/altar/back",
+        "blendedOverlays": [
+          {
+            "base": "game:block/plant/wildvine-static/wildvine_1",
+            "blendMode": "Overlay"
+          }
+        ]
+      },
+      "west": {
+        "base": "game:block/stone/altar/left",
+        "blendedOverlays": [
+          {
+            "base": "game:block/plant/wildvine-static/wildvine_2",
+            "blendMode": "Overlay"
+          }
+        ]
+      },
+      "east": {
+        "base": "game:block/stone/altar/right",
+        "blendedOverlays": [
+          {
+            "base": "game:block/plant/wildvine-static/wildvine_2",
+            "blendMode": "Overlay"
+          }
+        ]
+      }
+    },
+    "*-bound-*": {
+      "up": { "base": "game:block/stone/altar/top" },
+      "down": { "base": "game:block/stone/altar/bottom" },
+      "south": { "base": "game:block/stone/altar/front" },
+      "north": { "base": "game:block/stone/altar/back" },
+      "west": { "base": "game:block/stone/altar/left" },
+      "east": { "base": "game:block/stone/altar/right" }
+    }
+  }
+}

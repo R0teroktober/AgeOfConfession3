@@ -54,6 +54,13 @@
 		<PackageReference Include="CraluminumMods.VintageStory.AttributeRenderingLibrary" Version="2.8.1" PrivateAssets="all" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Reference Include="protobuf-net">
+			<HintPath>$(VINTAGE_STORY)\Lib\protobuf-net.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+	</ItemGroup>
+
 	<ProjectExtensions>
 		<VisualStudio><UserProperties /></VisualStudio>
 	</ProjectExtensions>

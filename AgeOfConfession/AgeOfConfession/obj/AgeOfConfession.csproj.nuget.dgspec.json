@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\git\\AgeOfConfession3\\AgeOfConfession\\AgeOfConfession\\AgeOfConfession.csproj": {}
+    "D:\\git\\AgeOfConfession\\AgeOfConfession\\AgeOfConfession\\AgeOfConfession.csproj": {}
   },
   "projects": {
-    "C:\\git\\AgeOfConfession3\\AgeOfConfession\\AgeOfConfession\\AgeOfConfession.csproj": {
+    "D:\\git\\AgeOfConfession\\AgeOfConfession\\AgeOfConfession\\AgeOfConfession.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\git\\AgeOfConfession3\\AgeOfConfession\\AgeOfConfession\\AgeOfConfession.csproj",
+        "projectUniqueName": "D:\\git\\AgeOfConfession\\AgeOfConfession\\AgeOfConfession\\AgeOfConfession.csproj",
         "projectName": "AgeOfConfession",
-        "projectPath": "C:\\git\\AgeOfConfession3\\AgeOfConfession\\AgeOfConfession\\AgeOfConfession.csproj",
-        "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
-        "outputPath": "C:\\git\\AgeOfConfession3\\AgeOfConfession\\AgeOfConfession\\obj\\",
+        "projectPath": "D:\\git\\AgeOfConfession\\AgeOfConfession\\AgeOfConfession\\AgeOfConfession.csproj",
+        "packagesPath": "C:\\Users\\leona\\.nuget\\packages\\",
+        "outputPath": "D:\\git\\AgeOfConfession\\AgeOfConfession\\AgeOfConfession\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\leona\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -30,6 +26,7 @@
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {}
           }
@@ -44,10 +41,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "CraluminumMods.VintageStory.AttributeRenderingLibrary": {
@@ -72,7 +70,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.202/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -1,4 +1,14 @@
 {
- 
-
+  "StartCharge": 540,
+  "MaxCharge": 1980,
+  "CommunityExclusionRadius": 100,
+  "InfluenceRadius": 10,
+  "BaseChargeGain": 3,
+  "DecayRate": 3,
+  "EmptyBeliefDeletionDays": 365,
+  "EffectiveDevotionPulsesPerDay": 8,
+  "TemporalStabilityGainByTier": [0.0075, 0.0175, 0.0275, 0.0375],
+  "HungerReductionByTier": [0.1, 0.25, 0.4, 0.5],
+  "HealingGainByTier": [0.0375, 0.0875, 0.1375, 0.1875],
+  "HolyDamageByTier": [1, 2, 4, 5]
 }

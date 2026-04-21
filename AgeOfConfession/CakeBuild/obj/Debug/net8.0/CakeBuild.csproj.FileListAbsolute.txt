@@ -106,3 +106,6 @@ C:\git\AgeOfConfession\AgeOfConfession\CakeBuild\obj\Debug\net8.0\refint\CakeBui
 C:\git\AgeOfConfession\AgeOfConfession\CakeBuild\obj\Debug\net8.0\CakeBuild.pdb
 C:\git\AgeOfConfession\AgeOfConfession\CakeBuild\obj\Debug\net8.0\CakeBuild.genruntimeconfig.cache
 C:\git\AgeOfConfession\AgeOfConfession\CakeBuild\obj\Debug\net8.0\ref\CakeBuild.dll
+D:\git\AgeOfConfession\AgeOfConfession\CakeBuild\obj\Debug\net8.0\CakeBuild.dll
+D:\git\AgeOfConfession\AgeOfConfession\CakeBuild\obj\Debug\net8.0\refint\CakeBuild.dll
+D:\git\AgeOfConfession\AgeOfConfession\CakeBuild\obj\Debug\net8.0\CakeBuild.pdb
