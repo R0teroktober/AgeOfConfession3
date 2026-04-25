@@ -1,6 +1,8 @@
 ﻿using System;
 using Vintagestory.API.Common;
 using Vintagestory.API.Datastructures;
+using System.Text;
+using Vintagestory.API.Config;
 
 namespace AgeOfConfession {
 
@@ -14,11 +16,14 @@ namespace AgeOfConfession {
         public int Charge { get; private set; }
         public int MaxCharge { get; private set; } = 1980;
 
+        public string CreatorPlayerUid { get; private set; } = "";
+        public string CreatorPlayerName { get; private set; } = "";
         public double LastDecayTotalDays { get; private set; }
 
         public override void Initialize(ICoreAPI api)
         {
             base.Initialize(api);
+            
 
             IsBound = Block?.Variant?["state"] == "bound";
         }
@@ -30,7 +35,7 @@ namespace AgeOfConfession {
                 && string.IsNullOrEmpty(CommunityId);
         }
 
-        public void Bind(string beliefCode, string communityId, int startCharge, int maxCharge, double currentTotalDays)
+        public void Bind(string beliefCode, string communityId, int startCharge, int maxCharge, double currentTotalDays, IPlayer creator)
         {
             IsBound = true;
             BeliefCode = beliefCode ?? "";
@@ -38,6 +43,9 @@ namespace AgeOfConfession {
             Charge = startCharge;
             MaxCharge = maxCharge;
             LastDecayTotalDays = currentTotalDays;
+
+            CreatorPlayerUid = creator?.PlayerUID ?? "";
+            CreatorPlayerName = creator?.PlayerName ?? "";
 
             MarkDirty(true);
         }
@@ -58,6 +66,8 @@ namespace AgeOfConfession {
             CommunityId = "";
             Charge = 0;
             LastDecayTotalDays = 0;
+            CreatorPlayerUid = "";
+            CreatorPlayerName = "";
 
             MarkDirty(true);
         }
@@ -97,6 +107,8 @@ namespace AgeOfConfession {
             tree.SetInt("charge", Charge);
             tree.SetInt("maxCharge", MaxCharge);
             tree.SetDouble("lastDecayTotalDays", LastDecayTotalDays);
+            tree.SetString("creatorPlayerUid", CreatorPlayerUid);
+            tree.SetString("creatorPlayerName", CreatorPlayerName);
         }
 
         public override void FromTreeAttributes(ITreeAttribute tree, IWorldAccessor worldForResolving)
@@ -109,6 +121,8 @@ namespace AgeOfConfession {
             Charge = tree.GetInt("charge", 0);
             MaxCharge = tree.GetInt("maxCharge", 1980);
             LastDecayTotalDays = tree.GetDouble("lastDecayTotalDays", 0);
+            CreatorPlayerUid = tree.GetString("creatorPlayerUid", "");
+            CreatorPlayerName = tree.GetString("creatorPlayerName", "");
         }
         public void SyncChargeFromSystem(int charge, int maxCharge, double lastDecayTotalDays)
         {
@@ -133,6 +147,28 @@ namespace AgeOfConfession {
             if (charge >= tier2) return 2;
 
             return 1;
+        }
+
+        public override void GetBlockInfo(IPlayer forPlayer, StringBuilder dsc)
+        {
+            base.GetBlockInfo(forPlayer, dsc);
+
+            if (!IsBound)
+            {
+                dsc.AppendLine(Lang.Get("A long forgotten place"));
+                return;
+            }
+
+            string beliefText = string.IsNullOrEmpty(BeliefCode)
+                ? Lang.Get("Unknown belief")
+                : BeliefCode;
+
+            string creatorText = string.IsNullOrEmpty(CreatorPlayerName)
+                ? Lang.Get("Unknown player")
+                : CreatorPlayerName;
+
+            dsc.AppendLine(Lang.Get("confession:blockinfo-belief", beliefText));
+            dsc.AppendLine(Lang.Get("confession:blockinfo-founder", creatorText));
         }
     }
 

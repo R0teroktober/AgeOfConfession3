@@ -2,6 +2,8 @@
 using Vintagestory.API.Common;
 using Vintagestory.API.Common.Entities;
 using Vintagestory.API.MathTools;
+using System.Reflection;
+using HarmonyLib;
 
 namespace AgeOfConfession
 {
@@ -11,11 +13,16 @@ namespace AgeOfConfession
         private ICoreClientAPI capi = null!;
         private IClientNetworkChannel clientChannel = null!;
 
+        private Harmony harmony;
+
+
         private bool devotionActiveClient;
         private Vec3d devotionStartPosClient;
         private long devotionValidationListenerId = -1;
         private bool sentStopThisFrame;
         private const string DevotionAnimationCode = "devoting";
+
+
 
 
         private static readonly AssetLocation DevotionAnsweredSound = new("confession:sounds/effect/devotionpulse");
@@ -29,6 +36,10 @@ namespace AgeOfConfession
             base.StartClientSide(api);
 
             capi = api;
+            DevotionClientState.Capi = api;
+
+            harmony = new Harmony("ageofconfession.devotion.client");
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
 
             clientChannel = api.Network.RegisterChannel("confession-devotion").RegisterMessageType(typeof(StartDevotionPacket)).RegisterMessageType(typeof(StopDevotionPacket)).RegisterMessageType(typeof(AnsweredDevotionPulsePacket)).SetMessageHandler<AnsweredDevotionPulsePacket>(OnAnsweredDevotionPulse).RegisterMessageType(typeof(InterruptDevotionPacket)); ;
 
@@ -41,9 +52,9 @@ namespace AgeOfConfession
 
         private bool OnDevotionHotkey(KeyCombination comb)
         {
-            if (!devotionActiveClient)
+            if (!devotionActiveClient && capi.World.Player.InventoryManager.ActiveHotbarSlot.Empty)
             {
-                StartDevotionClient();
+                 StartDevotionClient();
             }
             else
             {
@@ -55,17 +66,19 @@ namespace AgeOfConfession
 
         private void StartDevotionClient()
         {
-         
+            if (capi?.World?.Player == null)
+            {
+                return;
+            }
+            if ( !capi.World.Player.InventoryManager.ActiveHotbarSlot.Empty) return;
+
             devotionActiveClient = true;
             sentStopThisFrame = false;
 
             devotionStartPosClient = capi.World.Player.Entity.Pos.XYZ;
 
             StartDevotionAnimation();
-            if (capi?.World?.Player != null)
-            {
-                //ApplyDevotionCameraOffset();
-            }
+            DevotionClientState.DevotionActiveClient = true;
 
             clientChannel.SendPacket(new StartDevotionPacket());
 
@@ -79,15 +92,14 @@ namespace AgeOfConfession
 
         private void StopDevotionClient(bool notifyServer)
         {
+         
             if (!devotionActiveClient) return;
 
             devotionActiveClient = false;
 
             StopDevotionAnimation();
-            if (capi?.World?.Player != null)
-            {
-                //ResetDevotionCameraOffset();
-            }
+            DevotionClientState.DevotionActiveClient = false;
+
 
             if (devotionValidationListenerId >= 0)
             {
@@ -158,8 +170,20 @@ namespace AgeOfConfession
                 StopDevotionClient(true);
                 return;
             }
+
+            if (IsSneakingClient())
+            {
+                StopDevotionClient(true);
+                return;
+            }
+            if (!capi.World.Player.InventoryManager.ActiveHotbarSlot.Empty)
+            {
+                StopDevotionClient(true);
+                return;
+            }
         }
-        private bool HasPlayerMovedTooFarClient()
+
+            private bool HasPlayerMovedTooFarClient()
         {
             Vec3d currentPos = capi.World.Player.Entity.Pos.XYZ;
 
@@ -183,12 +207,23 @@ namespace AgeOfConfession
      
         private bool IsFloorSittingClient()
         {
-            return capi?.World?.Player?.Entity is EntityPlayer playerEntity
-                && playerEntity.Controls.FloorSitting;
+            return capi?.World?.Player?.Entity is EntityPlayer playerEntity && playerEntity.Controls.FloorSitting;
+        }
+
+        private bool IsSneakingClient()
+        {
+            return capi?.World?.Player?.Entity is EntityPlayer playerEntity && playerEntity.Controls.Sneak;
         }
 
         public override void Dispose()
         {
+            DevotionClientState.DevotionActiveClient = false;
+
+            if (devotionValidationListenerId >= 0)
+            {
+                capi.Event.UnregisterGameTickListener(devotionValidationListenerId);
+                devotionValidationListenerId = -1;
+            }
 
             base.Dispose();
         }

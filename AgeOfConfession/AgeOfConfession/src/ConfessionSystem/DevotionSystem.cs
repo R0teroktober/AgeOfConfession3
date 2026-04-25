@@ -1,4 +1,6 @@
-﻿using Vintagestory.API.MathTools;
+﻿using Vintagestory.API.Client;
+using Vintagestory.API.Common;
+using Vintagestory.API.MathTools;
 
 namespace AgeOfConfession
 {
@@ -19,5 +21,23 @@ namespace AgeOfConfession
 
 
     }
+    public static class DevotionClientState
+    {
+        public static ICoreClientAPI Capi { get; set; }
+        public static bool DevotionActiveClient { get; set; }
+
+        public static bool AppliesTo(EntityPlayer player)
+        {
+            if (Capi?.World?.Player?.Entity is not EntityPlayer localPlayer)
+            {
+                return false;
+            }
+
+            return DevotionActiveClient
+                && localPlayer.EntityId == player.EntityId
+                && Capi.World.Player.CameraMode == EnumCameraMode.FirstPerson;
+        }
+    }
+
 }
 

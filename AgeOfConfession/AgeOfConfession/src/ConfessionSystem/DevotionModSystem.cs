@@ -368,7 +368,7 @@ namespace AgeOfConfession {
             stats.ChargeContributingPulsesToday++;
             if (stats.ChargeContributingPulsesToday >= confession.Config.EffectiveDevotionPulsesPerDay)
             {
-                player.SendMessage(GlobalConstants.InfoLogChatGroup, "[Confession]: You feel exhausted.", EnumChatType.Notification);
+                //player.SendMessage(GlobalConstants.InfoLogChatGroup, "[Confession]: You feel exhausted.", EnumChatType.Notification);
             }
         }
 

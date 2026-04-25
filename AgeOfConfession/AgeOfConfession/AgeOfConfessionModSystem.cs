@@ -271,7 +271,7 @@ namespace AgeOfConfession
             BlockPos pos = selection.Position;
             Block block = sapi.World.BlockAccessor.GetBlock(pos);
 
-            if (block.Code.Domain != "confession" || !block.Code.Path.StartsWith("communityblock-"))
+            if (block.Code.Domain != "confession" || !block.Code.Path.StartsWith("communityblock"))
             {
                 return TextCommandResult.Error("The targeted block is not a community center.");
             }
@@ -294,7 +294,7 @@ namespace AgeOfConfession
 
             string communityId = GetCommunityId(pos);
 
-            be.Bind(beliefCode,communityId,config.StartCharge,config.MaxCharge,sapi.World.Calendar.TotalDays);
+            be.Bind(beliefCode,communityId,config.StartCharge,config.MaxCharge,sapi.World.Calendar.TotalDays, player);
 
             Block boundBlock = GetBoundVariant(block);
             if (boundBlock == null || boundBlock.Id == 0)
@@ -537,7 +537,7 @@ namespace AgeOfConfession
 
         public bool IsCommunityCenterBlock(Block block)
         {
-            return block.Code.Domain == "confession"&& block.Code.Path.StartsWith("communityblock-");
+            return block.Code.Domain == "confession"&& block.Code.Path.StartsWith("communityblock");
         }
 
         private Block GetUnboundVariant(Block currentBlock)
