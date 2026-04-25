@@ -1,12 +1,10 @@
 {
-    "$schema": "https://moddbcdn.vintagestory.at/schema/modinfo.latest.json",
-    "type": "Code",
-    "modid": "ageofconfession",
-    "name": "AgeOfConfession",
-    "authors": ["Roteroktober"],
-    "description": "Medieval themed architecture mod.",
-    "version": "3.0.0",
-    "dependencies": {
-      "game": "1.21.0-1.21.7"
-    }
+  "$schema": "https://moddbcdn.vintagestory.at/schema/modinfo.latest.json",
+  "type": "Code",
+  "modid": "ageofconfession",
+  "name": "AgeOfConfession",
+  "authors": ["Roteroktober"],
+  "description": "It's time to give your existence a purpose. You are the chosen one to bring the word to the people",
+  "version": "3.0.0",
+  "dependencies": { "game": "1.21.7" }
 }
