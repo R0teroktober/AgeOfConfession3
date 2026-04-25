@@ -1,0 +1,115 @@
+{
+  "enabled": true,
+  "code": "communityblock2",
+  "class": "CommunityCenter",
+  "entityClass": "CommunityCenter",
+  "maxStackSize": 64,
+  "blockmaterial": "wood",
+  "resistance": 2,
+  "renderPass": "OpaqueNoCull",
+  "facecullmode": "nevercull",
+  "lightabsorption": 0,
+  "sideopaque": { "all": false },
+  "sideao": { "all": true },
+  "sidesolid": { "all": false, "down": true },
+  "variantgroups": [
+    { "code": "style", "states": ["lectern"] },
+    { "code": "state", "states": ["bound", "unbound"] },
+    { "code": "side", "loadFromProperties": "abstract/horizontalorientation" }
+  ],
+  "attributes": {
+    "handbook": {
+      "groupBy": ["communityblock2-*"],
+      "excludeByType": { "east": true, "west": true, "south": true }
+    },
+    "reinforcable": true
+  },
+  "behaviors": [
+    {
+      "name": "HorizontalOrientable",
+      "properties": {
+        "dropBlockFace": "north",
+        "drop": {
+          "type": "block",
+          "code": "communityblock2-{style}-unbound-north"
+        }
+      }
+    }
+  ],
+  "shapeByType": {
+    "*-lectern-bound-*": {
+      "base": "game:block/clutter/bookshelves/lecturn-book-open",
+      "rotateYByType": {
+        "*-north": 0,
+        "*-east": 270,
+        "*-south": 180,
+        "*-west": 90
+      }
+    },
+    "*-lectern-unbound-*": {
+      "base": "game:block/clutter/bookshelves/lecturn-empty",
+      "rotateYByType": {
+        "*-north": 0,
+        "*-east": 270,
+        "*-south": 180,
+        "*-west": 90
+      }
+    }
+  },
+  "texturesByType": {
+    "*-lectern-bound-*": {
+      "ebony": { "base": "game:item/tool/material/ebony" },
+      "normal-orangebrown": { "base": "game:item/lore/normal-orangebrown" },
+      "ebony-ornate": { "base": "game:block/wood/ebony-ornate" },
+      "opened-normal": { "base": "game:item/lore/opened-normal" }
+    },
+    "*-lectern-unbound-*": {
+      "ebony": {
+        "base": "game:item/tool/material/ebony",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/mold/mold1", "blendMode": "Overlay" }
+        ]
+      },
+      "normal-orangebrown": {
+        "base": "game:item/lore/normal-orangebrown",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/mold/mold2", "blendMode": "Overlay" }
+        ]
+      },
+      "ebony-ornate": {
+        "base": "game:block/wood/ebony-ornate",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/mold/mold3", "blendMode": "Overlay" }
+        ]
+      },
+      "opened-normal": {
+        "base": "game:item/lore/opened-normal",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/mold/mold1", "blendMode": "Overlay" }
+        ]
+      }
+    }
+  },
+  "CollisionSelectionBox": {
+    "x1": 0.25,
+    "y1": 0,
+    "z1": 0.25,
+    "x2": 0.75,
+    "y2": 1,
+    "z2": 0.75,
+    "rotateYByType": {
+      "*-north": 0,
+      "*-east": 270,
+      "*-south": 180,
+      "*-west": 90
+    }
+  },
+  "creativeinventory": {
+    "confession": ["*-unbound-north"],
+    "general": ["*-unbound-north"]
+  },
+  "guiTransform": {
+    "rotation": { "x": -22.6, "y": 135, "z": 0 },
+    "origin": { "x": 0.5, "y": 0.7, "z": 0.5 }
+  }
+}

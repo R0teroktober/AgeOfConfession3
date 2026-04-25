@@ -1,0 +1,99 @@
+{
+  "enabled": true,
+  "code": "communityblock3",
+  "class": "CommunityCenter",
+  "entityClass": "CommunityCenter",
+  "maxStackSize": 64,
+  "blockmaterial": "wood",
+  "resistance": 2,
+  "renderPass": "OpaqueNoCull",
+  "facecullmode": "nevercull",
+  "lightabsorption": 0,
+  "sideopaque": { "all": false },
+  "sideao": { "all": true },
+  "sidesolidByType": {
+    "*-north": { "all": false, "north": true },
+    "*-east": { "all": false, "east": true },
+    "*-south": { "all": false, "south": true },
+    "*-west": { "all": false, "west": true }
+  },
+  "variantgroups": [
+    {
+      "code": "style",
+      "states": ["keys", "largefish", "ship", "town", "fish"]
+    },
+    { "code": "state", "states": ["bound", "unbound"] },
+    { "code": "side", "loadFromProperties": "abstract/horizontalorientation" }
+  ],
+  "attributes": {
+    "handbook": {
+      "groupBy": ["communityblock3-*"],
+      "excludeByType": { "east": true, "west": true, "south": true }
+    },
+    "reinforcable": true
+  },
+  "behaviors": [
+    {
+      "name": "HorizontalAttachable",
+      "properties": { "dropBlockFace": "north" }
+    }
+  ],
+  "shapeByType": {
+    "*": {
+      "base": "game:block/wood/banner/wall",
+      "rotateYByType": {
+        "*-north": 0,
+        "*-east": 270,
+        "*-south": 180,
+        "*-west": 90
+      }
+    }
+  },
+  "texturesByType": {
+    "*-bound-*": {
+      "symboltop": { "base": "game:block/cloth/banner/hansa/{style}-top" },
+      "red": { "base": "game:block/cloth/banner/mahogany" },
+      "symbolbot": { "base": "game:block/cloth/banner/hansa/{style}-bottom" },
+      "white": { "base": "game:block/cloth/banner/magnolia" },
+      "fringes": { "base": "game:block/cloth/banner/cadet-grey" },
+      "lead": { "base": "game:block/metal/plate/lead" }
+    },
+    "*-unbound-*": {
+      "symboltop": {
+        "base": "game:block/cloth/banner/hansa/{style}-top",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/mold/mold1", "blendMode": "Overlay" }
+        ]
+      },
+      "red": { "base": "game:block/cloth/banner/mahogany" },
+      "symbolbot": {
+        "base": "game:block/cloth/banner/hansa/{style}-bottom",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/mold/mold2", "blendMode": "Overlay" }
+        ]
+      },
+      "white": { "base": "game:block/cloth/banner/magnolia" },
+      "fringes": { "base": "game:block/cloth/banner/cadet-grey" },
+      "lead": { "base": "game:block/metal/plate/lead" }
+    }
+  },
+  "CollisionSelectionBox": {
+    "x1": 0,
+    "y1": 0,
+    "z1": 0,
+    "x2": 1,
+    "y2": 1,
+    "z2": 0.0625,
+    "rotateYByType": {
+      "*-north": 0,
+      "*-east": 270,
+      "*-south": 180,
+      "*-west": 90
+    }
+  },
+  "creativeinventory": {
+    "confession": ["*-unbound-north"],
+    "general": ["*-unbound-north"]
+  },
+  "guiTransform": { "origin": { "x": 0.5, "y": -0.1, "z": -0 }, "scale": 0.75 }
+}

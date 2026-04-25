@@ -1,0 +1,168 @@
+[
+  {
+    "enabled": true,
+    "ingredientPattern": "T,C",
+    "ingredients": {
+      "T": { "type": "item", "code": "game:gear-temporal" },
+      "C": { "type": "block", "code": "game:altar-north" }
+    },
+    "width": 1,
+    "height": 2,
+    "output": {
+      "type": "block",
+      "code": "confession:communityblock1-altar-unbound-ns"
+    }
+  },
+  {
+    "enabled": true,
+    "ingredientPattern": "T_,CW",
+    "ingredients": {
+      "T": { "type": "item", "code": "game:gear-temporal" },
+      "W": { "type": "item", "code": "game:chisel-*", "isTool": true },
+      "C": {
+        "type": "block",
+        "code": "game:metalblock-new-riveted-cupronickel"
+      }
+    },
+    "width": 2,
+    "height": 2,
+    "output": {
+      "type": "block",
+      "code": "confession:communityblock1-metal-unbound-ns"
+    }
+  },
+  {
+    "enabled": true,
+    "ingredientPattern": "T_,CW",
+    "ingredients": {
+      "T": { "type": "item", "code": "game:gear-temporal" },
+      "W": { "type": "item", "code": "game:chisel-*", "isTool": true },
+      "C": { "type": "block", "code": "game:debarkedlog-acacia-ud" }
+    },
+    "width": 2,
+    "height": 2,
+    "output": {
+      "type": "block",
+      "code": "confession:communityblock1-wood-unbound-ns"
+    }
+  },
+  {
+    "enabled": true,
+    "ingredientPattern": "PPP,PTP,P_P",
+    "ingredients": {
+      "T": { "type": "item", "code": "game:gear-temporal" },
+      "P": { "type": "item", "code": "game:plank-*" }
+    },
+    "width": 3,
+    "height": 3,
+    "output": {
+      "type": "block",
+      "code": "confession:communityblock1-table-unbound-ns"
+    }
+  },
+  {
+    "enabled": true,
+    "ingredientPattern": "PTP,_P_,PSP",
+    "ingredients": {
+      "T": { "type": "item", "code": "game:gear-temporal" },
+      "S": { "type": "item", "code": "game:stick" },
+      "P": { "type": "item", "code": "game:plank-*" }
+    },
+    "width": 3,
+    "height": 3,
+    "output": {
+      "type": "block",
+      "code": "confession:communityblock2-lectern-unbound-north"
+    }
+  },
+  {
+    "enabled": true,
+    "ingredientPattern": "T,B",
+    "ingredients": {
+      "T": { "type": "item", "code": "game:gear-temporal" },
+      "B": {
+        "type": "block",
+        "code": "game:banner-banner",
+        "attributes": { "type": "hansa-wall-keys" }
+      }
+    },
+    "width": 1,
+    "height": 2,
+    "output": {
+      "type": "block",
+      "code": "confession:communityblock3-keys-unbound-north"
+    }
+  },
+  {
+    "enabled": true,
+    "ingredientPattern": "T,B",
+    "ingredients": {
+      "T": { "type": "item", "code": "game:gear-temporal" },
+      "B": {
+        "type": "block",
+        "code": "game:banner-banner",
+        "attributes": { "type": "hansa-wall-largefish" }
+      }
+    },
+    "width": 1,
+    "height": 2,
+    "output": {
+      "type": "block",
+      "code": "confession:communityblock3-largefish-unbound-north"
+    }
+  },
+  {
+    "enabled": true,
+    "ingredientPattern": "T,B",
+    "ingredients": {
+      "T": { "type": "item", "code": "game:gear-temporal" },
+      "B": {
+        "type": "block",
+        "code": "game:banner-banner",
+        "attributes": { "type": "hansa-wall-ship" }
+      }
+    },
+    "width": 1,
+    "height": 2,
+    "output": {
+      "type": "block",
+      "code": "confession:communityblock3-ship-unbound-north"
+    }
+  },
+  {
+    "enabled": true,
+    "ingredientPattern": "T,B",
+    "ingredients": {
+      "T": { "type": "item", "code": "game:gear-temporal" },
+      "B": {
+        "type": "block",
+        "code": "game:banner-banner",
+        "attributes": { "type": "hansa-wall-town" }
+      }
+    },
+    "width": 1,
+    "height": 2,
+    "output": {
+      "type": "block",
+      "code": "confession:communityblock3-town-unbound-north"
+    }
+  },
+  {
+    "enabled": true,
+    "ingredientPattern": "T,B",
+    "ingredients": {
+      "T": { "type": "item", "code": "game:gear-temporal" },
+      "B": {
+        "type": "block",
+        "code": "game:banner-banner",
+        "attributes": { "type": "hansa-wall-fish" }
+      }
+    },
+    "width": 1,
+    "height": 2,
+    "output": {
+      "type": "block",
+      "code": "confession:communityblock3-fish-unbound-north"
+    }
+  }
+]

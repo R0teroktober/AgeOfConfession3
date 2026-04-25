@@ -1,0 +1,224 @@
+{
+  "enabled": true,
+  "code": "communityblock1",
+  "class": "CommunityCenter",
+  "entityClass": "CommunityCenter",
+  "maxStackSize": 64,
+  "blockmaterial": "Stone",
+  "resistance": 2,
+  "renderPass": "OpaqueNoCull",
+  "facecullmode": "nevercull",
+  "lightabsorption": 0,
+  "sideopaque": { "all": false },
+  "sideao": { "all": true },
+  "sidesolid": { "all": true },
+  "variantgroups": [
+    { "code": "style", "states": ["altar", "metal", "wood", "table"] },
+    { "code": "state", "states": ["bound", "unbound"] },
+    { "code": "side", "states": ["ns", "we"] }
+  ],
+  "attributes": {
+    "handbook": {
+      "groupBy": ["communityblock1-*"],
+      "excludeByType": { "we": true }
+    },
+    "reinforcable": true
+  },
+  "behaviors": [{ "name": "NWOrientable" }],
+  "shapeByType": {
+    "*-table-*": {
+      "base": "game:block/clutter/table-noble-single",
+      "rotateYByType": { "*-ns": 0, "*-we": 90 }
+    },
+    "*": {
+      "base": "game:block/basic/cube",
+      "rotateYByType": { "*-ns": 0, "*-we": 90 }
+    }
+  },
+  "texturesByType": {
+    "*-altar-bound-*": {
+      "up": { "base": "game:block/stone/altar/top" },
+      "down": { "base": "game:block/stone/altar/bottom" },
+      "south": { "base": "game:block/stone/altar/front" },
+      "north": { "base": "game:block/stone/altar/back" },
+      "west": { "base": "game:block/stone/altar/left" },
+      "east": { "base": "game:block/stone/altar/right" }
+    },
+    "*-metal-bound-*": {
+      "up": { "base": "game:block/metal/sheet/cupronickel2" },
+      "down": { "base": "game:block/metal/sheet/cupronickel2" },
+      "south": {
+        "base": "game:block/metal/sheet/cupronickel3",
+        "blendedOverlays": [
+          {
+            "base": "game:block/overlay/scribbles/carving/carving1",
+            "blendMode": "Multiply"
+          }
+        ]
+      },
+      "north": {
+        "base": "game:block/metal/sheet/cupronickel4",
+        "blendedOverlays": [
+          {
+            "base": "game:block/overlay/scribbles/carving/carving1",
+            "blendMode": "Multiply"
+          }
+        ]
+      },
+      "west": {
+        "base": "game:block/metal/sheet/cupronickel5",
+        "blendedOverlays": [
+          {
+            "base": "game:block/overlay/scribbles/carving/carving2",
+            "blendMode": "Multiply"
+          }
+        ]
+      },
+      "east": {
+        "base": "game:block/metal/sheet/cupronickel1",
+        "blendedOverlays": [
+          {
+            "base": "game:block/overlay/scribbles/carving/carving2",
+            "blendMode": "Multiply"
+          }
+        ]
+      }
+    },
+    "*-wood-bound-*": {
+      "up": { "base": "game:block/stone/polishedrock/chert" },
+      "down": { "base": "game:block/wood/carved/acacia/normal/treetrunk" },
+      "south": { "base": "game:block/wood/carved/acacia/normal/top1.png" },
+      "north": { "base": "game:block/wood/carved/acacia/normal/top1.png" },
+      "west": { "base": "game:block/wood/carved/acacia/normal/top1.png" },
+      "east": { "base": "game:block/wood/carved/acacia/normal/top1.png" }
+    },
+    "*-altar-unbound-*": {
+      "up": {
+        "base": "game:block/stone/altar/top",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/moss4", "blendMode": "Overlay" }
+        ]
+      },
+      "down": { "base": "game:block/stone/altar/bottom" },
+      "south": {
+        "base": "game:block/stone/altar/front",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/moss1", "blendMode": "Overlay" }
+        ]
+      },
+      "north": {
+        "base": "game:block/stone/altar/back",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/moss2", "blendMode": "Overlay" }
+        ]
+      },
+      "west": {
+        "base": "game:block/stone/altar/left",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/moss3", "blendMode": "Overlay" }
+        ]
+      },
+      "east": {
+        "base": "game:block/stone/altar/right",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/moss6", "blendMode": "Overlay" }
+        ]
+      }
+    },
+    "*-metal-unbound-*": {
+      "up": {
+        "base": "game:block/metal/sheet/cupronickel2",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/cracked1", "blendMode": "Overlay" }
+        ]
+      },
+      "down": { "base": "game:block/metal/sheet/cupronickel2" },
+      "south": {
+        "base": "game:block/metal/sheet/cupronickel3",
+        "blendedOverlays": [
+          {
+            "base": "game:block/overlay/scribbles/carving/carving1",
+            "blendMode": "Multiply"
+          },
+          { "base": "game:block/overlay/cracked2", "blendMode": "Overlay" }
+        ]
+      },
+      "north": {
+        "base": "game:block/metal/sheet/cupronickel4",
+        "blendedOverlays": [
+          {
+            "base": "game:block/overlay/scribbles/carving/carving1",
+            "blendMode": "Multiply"
+          },
+          { "base": "game:block/overlay/cracked3", "blendMode": "Overlay" }
+        ]
+      },
+      "west": {
+        "base": "game:block/metal/sheet/cupronickel5",
+        "blendedOverlays": [
+          {
+            "base": "game:block/overlay/scribbles/carving/carving2",
+            "blendMode": "Multiply"
+          },
+          { "base": "game:block/overlay/cracked1", "blendMode": "Overlay" }
+        ]
+      },
+      "east": {
+        "base": "game:block/metal/sheet/cupronickel1",
+        "blendedOverlays": [
+          {
+            "base": "game:block/overlay/scribbles/carving/carving2",
+            "blendMode": "Multiply"
+          },
+          { "base": "game:block/overlay/cracked2", "blendMode": "Overlay" }
+        ]
+      }
+    },
+    "*-wood-unbound-*": {
+      "up": {
+        "base": "game:block/stone/polishedrock/chert",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/moss4", "blendMode": "Overlay" }
+        ]
+      },
+      "down": { "base": "game:block/wood/carved/acacia/normal/treetrunk" },
+      "south": {
+        "base": "game:block/wood/carved/acacia/normal/top1.png",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/moss1", "blendMode": "Overlay" }
+        ]
+      },
+      "north": {
+        "base": "game:block/wood/carved/acacia/normal/top1.png",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/moss2", "blendMode": "Overlay" }
+        ]
+      },
+      "west": {
+        "base": "game:block/wood/carved/acacia/normal/top1.png",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/moss3", "blendMode": "Overlay" }
+        ]
+      },
+      "east": {
+        "base": "game:block/wood/carved/acacia/normal/top1.png",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/moss6", "blendMode": "Overlay" }
+        ]
+      }
+    },
+    "*-table-bound-*": { "ebony": { "base": "game:item/tool/material/ebony" } },
+    "*-table-unbound-*": {
+      "ebony": {
+        "base": "game:item/tool/material/ebony",
+        "blendedOverlays": [
+          { "base": "game:block/overlay/moss1", "blendMode": "Overlay" }
+        ]
+      }
+    }
+  },
+  "creativeinventory": {
+    "confession": ["*-unbound-ns"],
+    "general": ["*-unbound-ns"]
+  }
+}
