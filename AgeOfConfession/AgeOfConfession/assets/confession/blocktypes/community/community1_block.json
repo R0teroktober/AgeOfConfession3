@@ -207,10 +207,12 @@
         ]
       }
     },
-    "*-table-bound-*": { "ebony": { "base": "game:item/tool/material/ebony" } },
+    "*-table-bound-*": {
+      "ebony": { "base": "game:block/wood/debarked/mahogany" }
+    },
     "*-table-unbound-*": {
       "ebony": {
-        "base": "game:item/tool/material/ebony",
+        "base": "game:block/wood/debarked/mahogany",
         "blendedOverlays": [
           { "base": "game:block/overlay/moss1", "blendMode": "Overlay" }
         ]

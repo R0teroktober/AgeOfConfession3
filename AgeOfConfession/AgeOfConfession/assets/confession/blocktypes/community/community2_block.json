@@ -58,14 +58,14 @@
   },
   "texturesByType": {
     "*-lectern-bound-*": {
-      "ebony": { "base": "game:item/tool/material/ebony" },
+      "ebony": { "base": "game:block/wood/debarked/mahogany" },
       "normal-orangebrown": { "base": "game:item/lore/normal-orangebrown" },
       "ebony-ornate": { "base": "game:block/wood/ebony-ornate" },
       "opened-normal": { "base": "game:item/lore/opened-normal" }
     },
     "*-lectern-unbound-*": {
       "ebony": {
-        "base": "game:item/tool/material/ebony",
+        "base": "game:block/wood/debarked/mahogany",
         "blendedOverlays": [
           { "base": "game:block/overlay/mold/mold1", "blendMode": "Overlay" }
         ]

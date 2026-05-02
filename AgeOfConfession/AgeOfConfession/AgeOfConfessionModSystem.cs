@@ -34,7 +34,7 @@ namespace AgeOfConfession
             api.RegisterBlockEntityClass("CommunityCenter", typeof(BlockEntityCommunityCenter));
 
 
-            config = api.LoadModConfig<ConfessionConfig>("confession-config.json");
+            config = api.LoadModConfig<ConfessionConfig>("ageofconfession.json");
             if (config == null)
             {
                 config = new ConfessionConfig()
@@ -106,7 +106,15 @@ namespace AgeOfConfession
                     .HandleWith(OnBindCommunity)
                 .EndSubCommand()
 
+                .BeginSubCommand("whatsmyclass")
+                    .WithDescription("Returns your character class code (Enter this code in the modconfig)")
+                    .RequiresPrivilege(Privilege.chat)
+                    .RequiresPlayer()
+                    .HandleWith(OnWhatsMyClass)
+                .EndSubCommand()
+
                 .BeginSubCommand("admin")
+                .WithDescription("Admin commands to delete beliefs and communitys")
                     .RequiresPrivilege(Privilege.controlserver)
                     .BeginSubCommand("deleteCommunity")
                         .RequiresPrivilege(Privilege.controlserver)
@@ -335,6 +343,20 @@ namespace AgeOfConfession
             return TextCommandResult.Success($"This community center has been bound to the belief '{belief.DisplayName}'.");
         }
 
+        private TextCommandResult OnWhatsMyClass(TextCommandCallingArgs args)
+        {
+            IServerPlayer player = args.Caller.Player as IServerPlayer;
+            if (player == null)
+            {
+                return TextCommandResult.Error("Only players have character classes. WHAT are you...");
+            }
+            string playerClass = player.Entity.WatchedAttributes.GetString("characterClass", null);
+            if (!string.IsNullOrWhiteSpace(playerClass))
+            {
+                return TextCommandResult.Success($"Your character class code is: '{playerClass}'");
+            } else
+            return TextCommandResult.Error("Could not read your character class.");
+        }
 
 
         private void DeleteCommunityAndUnbindBlock(string communityId, bool save = true)
